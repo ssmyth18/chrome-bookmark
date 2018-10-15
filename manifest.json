@@ -1,0 +1,32 @@
+{
+  "manifest_version": 2,
+  "name": "Bookmark Selector",
+  "version": "1.0.0.0",
+  "description": "Simple Bookmark selecting without mouse",
+  "icons": {
+    "16": "images/icon16.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
+  },
+  "permissions": ["bookmarks", "tabs"],
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["jquery-3.3.1.min.js", "bookselect.js"]
+    }
+  ],
+  "background": {
+    "scripts": ["background.js"],
+    "presistent": false
+  },
+  "commands": {
+    "switch-display": {
+      "description": "拡張機能を有効にする",
+      "global": "false",
+      "suggested_key": {
+        "default": "Ctrl + B",
+        "mac": "Command + B"
+      }
+    }
+  }
+}
