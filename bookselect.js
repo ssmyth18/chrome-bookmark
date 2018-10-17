@@ -9,13 +9,14 @@ $(function () {
   chrome.runtime.sendMessage('getBookmarks', function (response) {
     const bookmarkUl = $('<ul class="bookmarkUl"></ul>');
     iframeBody.append(bookmarkUl);
+    console.log(response[0]);
     response[0].children.forEach(node => addNode(node, bookmarkUl));
   });
 
   function addNode(node, ul) {
     let item = $(`<li>${node.title}</li>`);
     if (node.url) {
-      item = $(`<li><a href="${node.url}"><img src="chrome://favicon/${node.url}"></img>${node.title}</a></li>`);
+      item = $(`<li><a href="${node.url}"><img src="${node.base64src}"></img>${node.title}</a></li>`);
     }
     if (node.children) {
       const childUl = $('<ul></ul>');
