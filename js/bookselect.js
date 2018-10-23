@@ -3,15 +3,27 @@ $(function() {
 
   const rootDiv = $('<div id="kr-bookmark-rootDiv"></div>');
   rootDiv.addClass('ui vertical menu');
-  rootDiv.css({ cssText: 'left: -248px !important;' });
+  rootDiv.css({ cssText: 'visibility: hidden; left: -248px !important;' });
   body.append(rootDiv);
 
-  const triggerBtn = $('<button id="kr-bookmark-trigger"">Test!</button>');
-  triggerBtn.addClass('ui primary basic button');
+  const triggerBtn = $('<button id="kr-bookmark-trigger""></button>');
+  triggerBtn.css({display: 'none'});
   body.append(triggerBtn);
 
-  $('#kr-bookmark-rootDiv').slideReveal({
-    trigger: $('#kr-bookmark-trigger'),
+  $(window).keydown(function(e) {
+    if (e.ctrlKey && e.keyCode === 66) {
+      triggerBtn.trigger('click');
+    }
+  });
+
+  rootDiv.slideReveal({
+    trigger: triggerBtn,
+    shown: function(slider, trigger) {
+      rootDiv.children().first().focus();
+    },
+    hide: function (slider, trigger) {
+      $(':focus').trigger('blur');
+    },
     push: false,
     overlay: true
   });
@@ -19,9 +31,9 @@ $(function() {
   chrome.runtime.sendMessage('getBookmarks', function(response) {
     response[0].children.forEach(node => addBookmarkNode(node, rootDiv));
     $('.ui.dropdown').dropdown();
-    const defaultStyle = $('#kr-bookmark-rootDiv').attr('style');
-    $('#kr-bookmark-rootDiv').css({
-      cssText: defaultStyle + 'left: -248px !important; margin-top: 0px;'
+    const defaultStyle = rootDiv.attr('style');
+    rootDiv.css({
+      cssText: defaultStyle + 'visibility: visible; left: -248px !important; margin-top: 0px;'
     });
   });
 
