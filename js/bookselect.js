@@ -1,4 +1,4 @@
-$(function() {
+$(function () {
 
   const body = $('body');
 
@@ -8,13 +8,13 @@ $(function() {
   body.append(rootDiv);
 
   const triggerBtn = $('<button id="kr-bookmark-trigger">Click!</button>');
-  triggerBtn.addClass('ui primary basic button');
-  // triggerBtn.css({display: 'none'});
+  // triggerBtn.addClass('ui primary basic button');
+  triggerBtn.css({ display: 'none' });
   body.append(triggerBtn);
 
   rootDiv.slideReveal({
     trigger: triggerBtn,
-    shown: function(slider, trigger) {
+    shown: function (slider, trigger) {
       rootDiv.children().first().focus();
     },
     hide: function (slider, trigger) {
@@ -24,17 +24,17 @@ $(function() {
     overlay: true
   });
 
-  chrome.runtime.onMessage.addListener(function(request, sender, callback) {
+  chrome.runtime.onMessage.addListener(function (request, sender, callback) {
     if (request.name === 'switchDisplay') {
       triggerBtn.trigger('click');
     }
   });
 
-  chrome.runtime.sendMessage({'name': 'getBookmarkList'}, function(response) {
+  chrome.runtime.sendMessage({ 'name': 'getBookmarkList' }, function (response) {
     response[0].children.forEach(node => addBookmarkNode(node, rootDiv));
 
     $('.ui.dropdown').dropdown({
-      action: function(text, value, element) {
+      action: function (text, value, element) {
         const href = $(text).attr('href');
         rootDiv.attr('href', href);
       }
@@ -57,7 +57,7 @@ $(function() {
     }
     const href = rootDiv.attr('href');
     if (e.ctrlKey) {
-      chrome.runtime.sendMessage({'name': 'openPageOnNewTab', 'href': href});
+      chrome.runtime.sendMessage({ 'name': 'openPageOnNewTab', 'href': href });
       return;
     }
     window.location.href = href;
@@ -74,30 +74,30 @@ $(function() {
   }
 
   function addMiddleNode(node, parentDiv, nodeTitle) {
-      if (node.children.length === 0) {
-        return;
-      }
-      const marginSpace = '　　';
-      const item = $(`<div>${nodeTitle}${marginSpace}</div>`);
-      item.addClass('ui left pointing dropdown link item');
-      item.css({'font-size': '14px'});
-      parentDiv.append(item);
+    if (node.children.length === 0) {
+      return;
+    }
+    const marginSpace = '　　';
+    const item = $(`<div>${nodeTitle}${marginSpace}</div>`);
+    item.addClass('ui left pointing dropdown link item');
+    item.css({ 'font-size': '14px' });
+    parentDiv.append(item);
 
-      item.prepend('<i class="dropdown icon"></i>');
-      const menuDiv = $('<div class="menu"></div>');
-      item.append(menuDiv);
+    item.prepend('<i class="dropdown icon"></i>');
+    const menuDiv = $('<div class="menu"></div>');
+    item.append(menuDiv);
 
-      node.children.forEach(childNode => addBookmarkNode(childNode, menuDiv));
+    node.children.forEach(childNode => addBookmarkNode(childNode, menuDiv));
   }
 
   function addLeafNode(node, parentDiv, nodeTitle) {
     const item = $(`<div><span>${nodeTitle}</span></div>`);
     item.addClass('item');
-    item.find('span').css({color: 'black', 'font-size': '14px'});
+    item.find('span').css({ color: 'black', 'font-size': '14px' });
     item.contents().wrap(`<a href="${node.url}"></a>`);
 
     const image = $(`<img src="${node.faviconSrc}"></img>`);
-    image.css({'vertical-align': 'middle', 'margin-right': '5px'});
+    image.css({ 'vertical-align': 'middle', 'margin-right': '5px' });
     item.children().prepend(image);
 
     parentDiv.append(item);

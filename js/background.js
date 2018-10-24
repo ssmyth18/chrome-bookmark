@@ -1,4 +1,4 @@
-chrome.commands.onCommand.addListener(function(command) {
+chrome.commands.onCommand.addListener(function (command) {
   if (command === 'switch-display') {
     const param = {
       active: true,
@@ -7,12 +7,12 @@ chrome.commands.onCommand.addListener(function(command) {
 
     chrome.tabs.query(param, response => {
       const currentTab = response.shift();
-      chrome.tabs.sendMessage(currentTab.id, {'name': 'switchDisplay'});
+      chrome.tabs.sendMessage(currentTab.id, { 'name': 'switchDisplay' });
     });
   }
 });
 
-chrome.runtime.onMessage.addListener(function(request, sender, callback) {
+chrome.runtime.onMessage.addListener(function (request, sender, callback) {
   if (request.name === 'getBookmarkList') {
     getBookmarkList(callback);
   }
@@ -22,12 +22,16 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
   return true;
 });
 
+chrome.browserAction.onClicked.addListener(function (tab) {
+  chrome.tabs.sendMessage(tab.id, { 'name': 'switchDisplay' });
+});
+
 function openPageOnNewTab(href) {
-  chrome.tabs.create({url: href});
+  chrome.tabs.create({ url: href });
 }
 
 function getBookmarkList(callback) {
-  chrome.bookmarks.getTree(function(nodes) {
+  chrome.bookmarks.getTree(function (nodes) {
     nodes.forEach(node => addFaviconSrc(node));
     callback(nodes);
   });
