@@ -28,7 +28,7 @@
   },
   "commands": {
     "switch-display": {
-      "description": "拡張機能を有効にする",
+      "description": "Active the extension",
       "global": "false",
       "suggested_key": {
         "default": "Ctrl + B",
