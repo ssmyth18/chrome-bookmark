@@ -1,5 +1,4 @@
-$(function () {
-
+$(function() {
   const body = $('body');
 
   const rootDiv = $('<div id="kr-bookmark-rootDiv"></div>');
@@ -14,27 +13,30 @@ $(function () {
 
   rootDiv.slideReveal({
     trigger: triggerBtn,
-    shown: function (slider, trigger) {
-      rootDiv.children().first().focus();
+    shown: function(slider, trigger) {
+      rootDiv
+        .children()
+        .first()
+        .focus();
     },
-    hide: function (slider, trigger) {
+    hide: function(slider, trigger) {
       $(':focus').trigger('blur');
     },
     push: false,
     overlay: true
   });
 
-  chrome.runtime.onMessage.addListener(function (request, sender, callback) {
+  chrome.runtime.onMessage.addListener(function(request, sender, callback) {
     if (request.name === 'switchDisplay') {
       triggerBtn.trigger('click');
     }
   });
 
-  chrome.runtime.sendMessage({ 'name': 'getBookmarkList' }, function (response) {
+  chrome.runtime.sendMessage({ name: 'getBookmarkList' }, function(response) {
     response[0].children.forEach(node => addBookmarkNode(node, rootDiv));
 
     $('.ui.dropdown').dropdown({
-      action: function (text, value, element) {
+      action: function(text, value, element) {
         const href = $(text).attr('href');
         rootDiv.attr('href', href);
       }
@@ -46,7 +48,9 @@ $(function () {
 
     const defaultStyle = rootDiv.attr('style');
     rootDiv.css({
-      cssText: defaultStyle + 'visibility: visible; left: -248px !important; margin-top: 0px;'
+      cssText:
+        defaultStyle +
+        'visibility: visible; left: -248px !important; margin-top: 0px;'
     });
   });
 
@@ -57,7 +61,7 @@ $(function () {
     }
     const href = rootDiv.attr('href');
     if (e.ctrlKey) {
-      chrome.runtime.sendMessage({ 'name': 'openPageOnNewTab', 'href': href });
+      chrome.runtime.sendMessage({ name: 'openPageOnNewTab', href: href });
       return;
     }
     window.location.href = href;
@@ -96,7 +100,8 @@ $(function () {
     item.find('span').css({ color: 'black', 'font-size': '14px' });
     item.contents().wrap(`<a href="${node.url}"></a>`);
 
-    const image = $(`<img src="${node.faviconSrc}"></img>`);
+    const imageSrc = `http://www.google.com/s2/favicons?domain=${node.url}`;
+    const image = $(`<img src="${imageSrc}"></img>`);
     image.css({ 'vertical-align': 'middle', 'margin-right': '5px' });
     item.children().prepend(image);
 
