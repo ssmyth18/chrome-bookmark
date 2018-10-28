@@ -1,0 +1,30 @@
+#mouseless-bmselect-body {
+  background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.mouseless-active {
+  display: block;
+}
+
+.mouseless-deactive {
+  display: none;
+}
+
+#pusher {
+  background-color: rgba(0, 0, 0, 0) !important;
+  z-index: auto !important;
+}
+
+.ui.sidebar {
+  overflow: visible !important;
+}
+
+.item-span {
+  color: black;
+  font-size: 14px;
+}
+
+.favicon {
+  vertical-align: middle !important;
+  margin-right: 5px !important;
+}
