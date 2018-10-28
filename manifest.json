@@ -1,6 +1,6 @@
 {
   "manifest_version": 2,
-  "name": "Bookmark Selector",
+  "name": "Mouseless Bookmarkselect",
   "version": "1.0.0.0",
   "description": "Simple Bookmark selecting without mouse",
   "icons": {
@@ -8,33 +8,18 @@
     "48": "images/icon48.png",
     "128": "images/icon128.png"
   },
-  "permissions": [
-    "bookmarks",
-    "tabs",
-    "chrome://favicon/"
-  ],
-  "content_security_policy": "script-src 'self'; object-src 'self' chrome://favicon;",
+  "permissions": ["bookmarks", "tabs", "chrome://favicon/"],
   "content_scripts": [
     {
-      "matches": [
-        "<all_urls>"
-      ],
-      "js": [
-        "js/jquery-3.3.1.min.js",
-        "js/jquery.slidereveal.min.js",
-        "js/semantic.min.js",
-        "js/bookselect.js"
-      ],
-      "css": [
-        "css/semantic.min.css"
-      ]
+      "matches": ["<all_urls>"],
+      "js": ["js/jquery-3.3.1.min.js", "js/mouseless-append-iframe.js"],
+      "css": ["css/mouseless-bmselect-top.css"]
     }
   ],
+  "web_accessible_resources": ["html/mouseless-bmselect-iframe.html"],
   "browser_action": {},
   "background": {
-    "scripts": [
-      "js/background.js"
-    ],
+    "scripts": ["js/background.js"],
     "presistent": false
   },
   "commands": {
