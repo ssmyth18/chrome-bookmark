@@ -12,7 +12,7 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["js/jquery-3.3.1.min.js", "js/mouseless-append-iframe.js"],
+      "js": ["js/jquery-3.3.1.min.js", "js/mouseless-bmselect-top.js"],
       "css": ["css/mouseless-bmselect-top.css"]
     }
   ],

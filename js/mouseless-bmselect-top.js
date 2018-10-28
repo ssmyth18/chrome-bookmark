@@ -8,34 +8,26 @@ $(function() {
   body.append(iframe);
 
   chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-    if (request.name === 'switchDisplay') {
-      switchDisplay();
-    }
-    if (request.name === 'activate') {
-      activate();
-    }
-    if (request.name === 'deactivate') {
-      deactivate();
+    if (request.name === 'switchIframe') {
+      switchIframe(request);
     }
   });
 
-  function switchDisplay() {
-    if (iframe.hasClass('mouseless-active')) {
-      deactivate();
+  function switchIframe(request) {
+    if (request.type === 'activate') {
+      activateIframe();
     } else {
-      activate();
+      deactivateIframe();
     }
   }
 
-  function activate() {
+  function activateIframe() {
     iframe.removeClass('mouseless-deactive');
     iframe.addClass('mouseless-active');
-    chrome.runtime.sendMessage({ name: 'activateSidebar' });
   }
 
-  function deactivate() {
+  function deactivateIframe() {
     iframe.removeClass('mouseless-active');
     iframe.addClass('mouseless-deactive');
-    chrome.runtime.sendMessage({ name: 'deactivateSidebar' });
   }
 });

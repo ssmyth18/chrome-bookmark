@@ -8,17 +8,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, callback) {
   if (request.name === 'openPageOnCurrentTab') {
     openPageOnCurrentTab(request.href);
   }
-  if (request.name === 'deactivate') {
-    deactivate();
-  }
-  if (request.name === 'activate') {
-    activate();
-  }
-  if (request.name === 'deactivateSidebar') {
-    deactivateSidebar();
-  }
-  if (request.name === 'activateSidebar') {
-    activateSidebar();
+  if (request.name === 'switchIframe') {
+    switchIframe(request);
   }
   return true;
 });
@@ -33,15 +24,9 @@ function openPageOnCurrentTab(href) {
   );
 }
 
-function deactivateSidebar() {
+function switchIframe(request) {
   chrome.tabs.query({ active: true, currentWindow: true }, tabs =>
-    chrome.tabs.sendMessage(tabs[0].id, { name: 'deactivateSidebar' })
-  );
-}
-
-function activateSidebar() {
-  chrome.tabs.query({ active: true, currentWindow: true }, tabs =>
-    chrome.tabs.sendMessage(tabs[0].id, { name: 'activateSidebar' })
+    chrome.tabs.sendMessage(tabs[0].id, request)
   );
 }
 

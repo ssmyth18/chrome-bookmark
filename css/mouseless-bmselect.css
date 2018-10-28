@@ -2,6 +2,14 @@
   background-color: rgba(0, 0, 0, 0) !important;
 }
 
+.mouseless-active {
+  display: block;
+}
+
+.mouseless-deactive {
+  display: none;
+}
+
 #pusher {
   background-color: rgba(0, 0, 0, 0) !important;
   z-index: auto !important;

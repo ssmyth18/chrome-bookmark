@@ -9,11 +9,12 @@ $(function() {
   body.append(pusher);
 
   chrome.runtime.onMessage.addListener(function(request, sender, callback) {
-    if (request.name === 'activateSidebar') {
-      activateSidebar();
-    }
-    if (request.name === 'deactivateSidebar') {
-      deactivateSidebar();
+    if (request.name === 'switchDisplay') {
+      if (body.hasClass('mouseless-active')) {
+        deactivate();
+      } else {
+        activate();
+      }
     }
   });
 
@@ -21,13 +22,7 @@ $(function() {
     response[0].children.forEach(node => addBookmarkNode(node, sidebar));
 
     sidebar.sidebar({
-      on: 'hover',
-      onShow: function() {
-        sidebar
-          .children()
-          .first()
-          .focus();
-      }
+      on: 'hover'
     });
 
     $('.ui.dropdown').dropdown({
@@ -37,49 +32,74 @@ $(function() {
       }
     });
 
-    // sidebar.on('keydown', function() {
-    //   const currentSelected = $('.selected');
-    //   // TODO like hover events
-    //   // currentSelected.trigger('mouseenter');
-    // });
-    sidebar.find('div').keydown(e => {
-      openBookmark(e);
-    });
     body.on('keydown', function(e) {
       const escapeKeyCode = 27;
-      if (e.keyCode === escapeKeyCode) {
-        if (sidebar.hasClass('visible')) {
-          chrome.runtime.sendMessage({ name: 'deactivate' });
-        }
+      if (e.keyCode === escapeKeyCode && body.hasClass('mouseless-active')) {
+        deactivate();
       }
     });
+    sidebar.on('keydown', function() {
+      const currentSelected = $('.selected');
+      // TODO like hover events
+      // currentSelected.trigger('mouseenter');
+    });
+    sidebar.find('div').keydown(e => {
+      const enterKeyCode = 13;
+      if (e.keyCode !== enterKeyCode) {
+        return;
+      }
+      openBookmark(e);
+    });
+    sidebar.find('.leaf-link').click(e => {
+      deactivate();
+      e.stopPropagation();
+      if (e.ctrlKey) {
+        return;
+      }
+      e.preventDefault();
+      const href = $(e.currentTarget).attr('href');
+      chrome.runtime.sendMessage({ name: 'openPageOnCurrentTab', href: href });
+    });
     pusher.on('click', function() {
-      if (sidebar.hasClass('visible')) {
-        chrome.runtime.sendMessage({ name: 'deactivate' });
+      if (body.hasClass('mouseless-active')) {
+        deactivate();
       }
     });
   });
 
-  function activateSidebar() {
+  function activate() {
     sidebar.sidebar('toggle');
+    sidebar.addClass('visible');
+    pusher.addClass('dimmed');
+    body.removeClass('mouseless-deactive');
+    body.addClass('mouseless-active');
+    sidebar
+      .children()
+      .first()
+      .focus();
+    chrome.runtime.sendMessage({ name: 'switchIframe', type: 'activate' });
   }
 
-  function deactivateSidebar() {
+  function deactivate() {
     sidebar.sidebar('toggle');
+    sidebar.removeClass('visible');
+    pusher.removeClass('dimmed');
+    body.removeClass('mouseless-active');
+    body.addClass('mouseless-deactive');
+    chrome.runtime.sendMessage({ name: 'switchIframe', type: 'deactivate' });
   }
 
   function openBookmark(e) {
-    const enterKeyCode = 13;
-    if (e.keyCode !== enterKeyCode) {
+    const href = sidebar.attr('href');
+    if (!sidebar) {
       return;
     }
-    chrome.runtime.sendMessage({ name: 'deactivate' });
-    const href = sidebar.attr('href');
+    deactivate();
     if (e.ctrlKey) {
       chrome.runtime.sendMessage({ name: 'openPageOnNewTab', href: href });
-      return;
+    } else {
+      chrome.runtime.sendMessage({ name: 'openPageOnCurrentTab', href: href });
     }
-    chrome.runtime.sendMessage({ name: 'openPageOnCurrentTab', href: href });
   }
 
   function addBookmarkNode(node, parentDiv) {
@@ -93,9 +113,13 @@ $(function() {
   }
 
   function addLeafNode(node, parentDiv, nodeTitle) {
-    const item = $(`<div><span class="item-span">${nodeTitle}</span></div>`);
-    item.addClass('item');
-    item.contents().wrap(`<a href="${node.url}"></a>`);
+    const item = $(
+      `<div><span class="leaf item-span">${nodeTitle}</span></div>`
+    );
+    item.addClass('leaf item');
+    const leafLink = $(`<a href="${node.url}"></a>`);
+    leafLink.addClass('leaf-link');
+    item.contents().wrap(leafLink);
 
     if (node.url.match(/^http.*/)) {
       const imgSrc = `https://www.google.com/s2/favicons?domain=${node.url}`;
