@@ -121,14 +121,9 @@ $(function() {
     leafLink.addClass('leaf-link');
     item.contents().wrap(leafLink);
 
-    if (node.url.match(/^http.*/)) {
-      const imgSrc = `https://www.google.com/s2/favicons?domain=${node.url}`;
-      const img = $(`<img src="${imgSrc}"></img>`);
-      img.addClass('favicon');
-      item.children().prepend(img);
-    } else {
-      // TODO add alternative icon
-    }
+    const img = $(`<img src="${node.faviconUrl}"></img>`);
+    img.addClass('favicon');
+    item.children().prepend(img);
 
     parentDiv.append(item);
   }
@@ -137,7 +132,10 @@ $(function() {
     if (node.children.length === 0) {
       return;
     }
-    const item = $(`<div><span class="item-span">${nodeTitle}</span></div>`);
+    const margin = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+    const item = $(
+      `<div><span class="item-span">${nodeTitle}${margin}</span></div>`
+    );
     item.addClass('ui left pointing dropdown link item');
     parentDiv.append(item);
 
