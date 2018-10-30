@@ -19,7 +19,7 @@
   "web_accessible_resources": ["html/mouseless-bmselect-iframe.html"],
   "browser_action": {},
   "background": {
-    "scripts": ["js/jquery-3.3.1.min.js", "js/background.js"],
+    "scripts": ["js/background.js"],
     "presistent": false
   },
   "commands": {

@@ -29,6 +29,5 @@ $(function() {
   function deactivateIframe() {
     iframe.removeClass('mouseless-active');
     iframe.addClass('mouseless-deactive');
-    body.focus();
   }
 });
