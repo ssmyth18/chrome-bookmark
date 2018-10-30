@@ -31,7 +31,24 @@ function switchIframe(request) {
 }
 
 function getBookmarkList(callback) {
-  chrome.bookmarks.getTree(nodes => callback(nodes));
+  chrome.bookmarks.getTree(nodes => {
+    nodes.forEach(node => addImageSrc(node));
+    callback(nodes);
+  });
+}
+function addImageSrc(node) {
+  if (node.url) {
+    addFaviconUrl(node);
+  }
+  if (node.children) {
+    node.children.forEach(childNode => addImageSrc(childNode));
+  }
+}
+function addFaviconUrl(node) {
+  const re = /^https?:\/{2}[^\/]+\/?/;
+  const domainPath = re.exec(node.url);
+  faviconUrl = `chrome://favicon/${domainPath}`;
+  node.faviconUrl = faviconUrl;
 }
 
 chrome.browserAction.onClicked.addListener(function(tab) {
